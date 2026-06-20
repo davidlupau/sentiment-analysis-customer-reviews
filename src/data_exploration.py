@@ -13,14 +13,15 @@ import pandas as pd
 def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
     """Remove unusable rows from the dataset.
 
-    Drops rows where 'text' or 'rating' contain null values, then removes
-    exact duplicate rows. Reports counts at each step.
+    Drops rows where 'text' or 'rating' contain null values, rows where
+    'text' is blank or whitespace-only, then removes exact duplicate rows.
+    Reports counts at each step.
 
-    Args:
-        df: Raw DataFrame loaded from the CSV file.
+    Parameters:
+        df (pd.DataFrame): Raw DataFrame loaded from the CSV file.
 
     Returns:
-        pd.DataFrame: Cleaned DataFrame with nulls and duplicates removed.
+        pd.DataFrame: Cleaned DataFrame with nulls, blanks, and duplicates removed.
     """
     initial_rows = len(df)
     print(f"Initial row count: {initial_rows:,}")
@@ -32,6 +33,14 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
         df = df[~null_mask]
     else:
         print("No null values found in 'text' or 'rating'.")
+
+    blank_mask = df["text"].str.strip() == ""
+    blank_count = int(blank_mask.sum())
+    if blank_count:
+        print(f"Dropping {blank_count:,} rows with blank or whitespace-only 'text'.")
+        df = df[~blank_mask]
+    else:
+        print("No blank or whitespace-only 'text' values found.")
 
     duplicate_count = int(df.duplicated().sum())
     if duplicate_count:

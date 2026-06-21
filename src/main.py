@@ -1,5 +1,8 @@
 from utils import detect_device, load_dataset, save_to_excel
 from data_exploration import clean_dataset, map_rating_to_sentiment, plot_class_imbalance
+from data_processing import split_dataset, balance_training_set
+
+SAMPLES_PER_CLASS = 5_000
 
 
 def main():
@@ -15,6 +18,10 @@ def main():
     df = map_rating_to_sentiment(df)
     #save_to_excel(df, "sentiment_mapped.xlsx")
     plot_class_imbalance(df)
+
+    # Split then balance training set
+    df_train, df_test = split_dataset(df)
+    df_train = balance_training_set(df_train, SAMPLES_PER_CLASS)
 
 
 if __name__ == "__main__":

@@ -5,9 +5,21 @@ All data files are loaded from /data/ and outputs are saved to /analysis_output/
 """
 
 import platform
+import re
 import pandas as pd
 import torch
 from pathlib import Path
+
+# Characters illegal in XML 1.0 (and therefore in .xlsx cell values)
+_ILLEGAL_CHARS_RE = re.compile(r'[\x00-\x08\x0B-\x0C\x0E-\x1F]')
+
+
+def _sanitise_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Return a copy of df with XML-illegal characters stripped from string columns."""
+    df = df.copy()
+    for col in df.select_dtypes(include='object').columns:
+        df[col] = df[col].str.replace(_ILLEGAL_CHARS_RE, '', regex=True)
+    return df
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -61,5 +73,43 @@ def load_dataset(file_name):
         print(f"Error loading {file_name}: {e}")
         return None
 
+# ─────────────────────────────────────────────────────────────────────────────
+# SECTION 3 — DATA SAVING
+# ─────────────────────────────────────────────────────────────────────────────
 
+def save_to_excel(data, file_name):
+    """Save analysis results to Excel file in analysis_output folder
+    Parameters:
+        data: DataFrame or dict of DataFrames to save
+        file_name (str): name of the output Excel file
+    Returns:
+        str: path to saved file, None if failed
+    """
+    print(f"Saving analysis to {file_name}...\n")
+    try:
+        # Get the project root (go up from src/)
+        project_root = Path(__file__).parent.parent
+        output_dir = project_root / "analysis_output"
+
+        # Create directory if it doesn't exist
+        output_dir.mkdir(exist_ok=True)
+
+        output_file = output_dir / file_name
+
+        if isinstance(data, dict):
+            # Multiple sheets
+            with pd.ExcelWriter(output_file, engine='openpyxl') as writer:
+                for sheet_name, df in data.items():
+                    _sanitise_df(df).to_excel(writer, sheet_name=sheet_name, index=False)
+        else:
+            # Single DataFrame
+            with pd.ExcelWriter(output_file, engine='openpyxl') as writer:
+                _sanitise_df(data).to_excel(writer, sheet_name="Data", index=False)
+
+        print(f"Successfully saved to {output_file}\n")
+        return str(output_file)
+
+    except Exception as e:
+        print(f"Error saving {file_name}: {e}")
+        return None
 

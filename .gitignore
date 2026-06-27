@@ -52,9 +52,10 @@ htmlcov/
 Thumbs.db
 Desktop.ini
 
-# Project data and outputs (too large / regenerated, kept out of version control)
+# Project data, models and outputs (too large / regenerated, kept out of version control)
 data/
 analysis_output/
+saved_model/
 
 # Model training outputs (regenerated each run, far too large for Git)
 distilbert_output/

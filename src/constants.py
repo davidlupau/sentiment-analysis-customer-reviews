@@ -18,3 +18,6 @@ MAX_TOKEN_LENGTH: int = 256
 BATCH_SIZE: int = 16
 LABEL_TO_ID: dict[str, int] = {"negative": 0, "neutral": 1, "positive": 2}
 ID_TO_LABEL: dict[int, str] = {0: "negative", 1: "neutral", 2: "positive"}
+
+# DistilBERT model persistence
+MODEL_SAVE_DIR: str = "saved_model"

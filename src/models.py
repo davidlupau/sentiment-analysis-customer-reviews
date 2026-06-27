@@ -4,6 +4,7 @@ Model training and prediction functions for the sentiment classifier.
 """
 
 import time
+from pathlib import Path
 
 import torch
 from torch.utils.data import Dataset
@@ -26,6 +27,7 @@ from constants import (
     BATCH_SIZE,
     LABEL_TO_ID,
     ID_TO_LABEL,
+    MODEL_SAVE_DIR,
 )
 
 
@@ -109,6 +111,7 @@ def train_distilbert(
     X_val: list[str],
     y_val: list[str],
     device: torch.device,
+    save_dir: str = MODEL_SAVE_DIR,
 ) -> tuple:
     """Fine-tune DistilBERT for 3-class sentiment classification.
 
@@ -118,6 +121,7 @@ def train_distilbert(
         X_val (list[str]): Validation review texts.
         y_val (list[str]): Validation sentiment labels (string).
         device (torch.device): Compute device (mps, cuda, or cpu).
+        save_dir (str): Directory to save the fine-tuned model and tokenizer.
 
     Returns:
         tuple[DistilBertForSequenceClassification, DistilBertTokenizerFast]:
@@ -170,6 +174,11 @@ def train_distilbert(
     elapsed_minutes = (time.time() - start) / 60
     print(f"\n{'='*50}\nTraining completed in {elapsed_minutes:.1f} minutes\n{'='*50}")
 
+    Path(save_dir).mkdir(parents=True, exist_ok=True)
+    model.save_pretrained(save_dir)
+    tokenizer.save_pretrained(save_dir)
+    print(f"  Model and tokenizer saved to: {save_dir}\n")
+
     return model, tokenizer
 
 
@@ -208,3 +217,26 @@ def predict_distilbert(
         all_preds.extend(logits.argmax(dim=-1).tolist())
 
     return [ID_TO_LABEL[i] for i in all_preds]
+
+
+def load_distilbert(
+    save_dir: str,
+    device: torch.device,
+) -> tuple:
+    """Load a fine-tuned DistilBERT model and tokenizer from disk.
+
+    Parameters:
+        save_dir (str): Directory containing the saved model and tokenizer.
+        device (torch.device): Compute device to move the model to.
+
+    Returns:
+        tuple[DistilBertForSequenceClassification, DistilBertTokenizerFast]:
+            Loaded model (in eval mode) and tokenizer.
+    """
+    print(f"Loading DistilBERT model from: {save_dir}")
+    tokenizer = DistilBertTokenizerFast.from_pretrained(save_dir)
+    model = DistilBertForSequenceClassification.from_pretrained(save_dir)
+    model.to(device)
+    model.eval()
+    print(f"  Model is on device: {next(model.parameters()).device}\n")
+    return model, tokenizer

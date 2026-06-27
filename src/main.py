@@ -1,14 +1,27 @@
+import argparse
+
 from sklearn.model_selection import train_test_split
 
 from utils import detect_device, load_dataset, save_to_excel
 from data_exploration import clean_dataset, map_rating_to_sentiment, plot_class_imbalance
 from data_processing import split_dataset, balance_training_set
-from models import train_baseline, predict_baseline, train_distilbert, predict_distilbert
+from models import train_baseline, predict_baseline, train_distilbert, predict_distilbert, load_distilbert
 from evaluation import evaluate_model, plot_confusion_matrix
-from constants import SAMPLES_PER_CLASS, RANDOM_STATE
+from constants import SAMPLES_PER_CLASS, RANDOM_STATE, MODEL_SAVE_DIR
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Sentiment analysis pipeline")
+    parser.add_argument(
+        "--skip-training",
+        action="store_true",
+        help="Load saved DistilBERT model instead of retraining. Requires a saved model in MODEL_SAVE_DIR.",
+    )
+    args = parser.parse_args()
+
+    mode = "EVALUATION ONLY (loading saved model)" if args.skip_training else "FULL PIPELINE (training + evaluation)"
+    print(f"\n{'='*50}\nMode: {mode}\n{'='*50}\n")
+
     DEVICE = detect_device()
 
     # Loading dataset
@@ -36,19 +49,22 @@ def main():
     print(f"Predictions stored — {len(baseline_preds):,} test samples ready for evaluation.")
 
     # Champion model — DistilBERT fine-tuning
-    df_bert_train, df_bert_val = train_test_split(
-        df_train,
-        test_size=0.1,
-        random_state=RANDOM_STATE,
-        stratify=df_train["sentiment"],
-    )
-    model_distilbert, tokenizer = train_distilbert(
-        df_bert_train["text"].tolist(),
-        df_bert_train["sentiment"].tolist(),
-        df_bert_val["text"].tolist(),
-        df_bert_val["sentiment"].tolist(),
-        DEVICE,
-    )
+    if args.skip_training:
+        model_distilbert, tokenizer = load_distilbert(MODEL_SAVE_DIR, DEVICE)
+    else:
+        df_bert_train, df_bert_val = train_test_split(
+            df_train,
+            test_size=0.1,
+            random_state=RANDOM_STATE,
+            stratify=df_train["sentiment"],
+        )
+        model_distilbert, tokenizer = train_distilbert(
+            df_bert_train["text"].tolist(),
+            df_bert_train["sentiment"].tolist(),
+            df_bert_val["text"].tolist(),
+            df_bert_val["sentiment"].tolist(),
+            DEVICE,
+        )
     distilbert_preds = predict_distilbert(
         model_distilbert, tokenizer, df_test["text"].tolist(), DEVICE
     )

@@ -51,3 +51,13 @@ htmlcov/
 # OS Generated
 Thumbs.db
 Desktop.ini
+
+# Project data and outputs (too large / regenerated, kept out of version control)
+data/
+analysis_output/
+
+# Model training outputs (regenerated each run, far too large for Git)
+distilbert_output/
+src/distilbert_output/
+*.safetensors
+*.pt

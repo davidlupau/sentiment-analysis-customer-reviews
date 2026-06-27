@@ -1,8 +1,10 @@
+from sklearn.model_selection import train_test_split
+
 from utils import detect_device, load_dataset, save_to_excel
 from data_exploration import clean_dataset, map_rating_to_sentiment, plot_class_imbalance
 from data_processing import split_dataset, balance_training_set
-from models import train_baseline, predict_baseline
-from constants import SAMPLES_PER_CLASS
+from models import train_baseline, predict_baseline, train_distilbert, predict_distilbert
+from constants import SAMPLES_PER_CLASS, RANDOM_STATE
 
 
 def main():
@@ -31,6 +33,25 @@ def main():
         vectorizer_baseline, model_baseline, df_test["text"].tolist()
     )
     print(f"Predictions stored — {len(baseline_preds):,} test samples ready for evaluation.")
+
+    # Champion model — DistilBERT fine-tuning
+    df_bert_train, df_bert_val = train_test_split(
+        df_train,
+        test_size=0.1,
+        random_state=RANDOM_STATE,
+        stratify=df_train["sentiment"],
+    )
+    model_distilbert, tokenizer = train_distilbert(
+        df_bert_train["text"].tolist(),
+        df_bert_train["sentiment"].tolist(),
+        df_bert_val["text"].tolist(),
+        df_bert_val["sentiment"].tolist(),
+        DEVICE,
+    )
+    distilbert_preds = predict_distilbert(
+        model_distilbert, tokenizer, df_test["text"].tolist(), DEVICE
+    )
+    print(f"Predictions stored — {len(distilbert_preds):,} test samples ready for evaluation.")
 
 
 if __name__ == "__main__":

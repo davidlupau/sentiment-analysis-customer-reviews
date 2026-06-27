@@ -4,6 +4,7 @@ from utils import detect_device, load_dataset, save_to_excel
 from data_exploration import clean_dataset, map_rating_to_sentiment, plot_class_imbalance
 from data_processing import split_dataset, balance_training_set
 from models import train_baseline, predict_baseline, train_distilbert, predict_distilbert
+from evaluation import evaluate_model, plot_confusion_matrix
 from constants import SAMPLES_PER_CLASS, RANDOM_STATE
 
 
@@ -52,6 +53,24 @@ def main():
         model_distilbert, tokenizer, df_test["text"].tolist(), DEVICE
     )
     print(f"Predictions stored — {len(distilbert_preds):,} test samples ready for evaluation.")
+
+    # Evaluation — both models, same code
+    y_true = df_test["sentiment"].tolist()
+
+    metrics_baseline = evaluate_model(y_true, baseline_preds, "TF-IDF Baseline")
+    plot_confusion_matrix(y_true, baseline_preds, "TF-IDF Baseline")
+
+    metrics_distilbert = evaluate_model(y_true, distilbert_preds, "DistilBERT Champion")
+    plot_confusion_matrix(y_true, distilbert_preds, "DistilBERT Champion")
+
+    sep = "═" * 40
+    print(f"\n{sep}\nMODEL COMPARISON SUMMARY\n{sep}")
+    print(f"{'':16}  Accuracy  Macro-F1")
+    if metrics_baseline:
+        print(f"{'TF-IDF Baseline':<16}:  {metrics_baseline['accuracy']:.4f}    {metrics_baseline['macro_f1']:.4f}")
+    if metrics_distilbert:
+        print(f"{'DistilBERT':<16}:  {metrics_distilbert['accuracy']:.4f}    {metrics_distilbert['macro_f1']:.4f}")
+    print(sep)
 
 
 if __name__ == "__main__":

@@ -17,6 +17,16 @@ def main():
         action="store_true",
         help="Load saved DistilBERT model instead of retraining. Requires a saved model in MODEL_SAVE_DIR.",
     )
+    parser.add_argument(
+        "--save-dir",
+        default=MODEL_SAVE_DIR,
+        help="Directory to save the trained DistilBERT model (default: MODEL_SAVE_DIR).",
+    )
+    parser.add_argument(
+        "--load-dir",
+        default=MODEL_SAVE_DIR,
+        help="Directory to load the saved DistilBERT model from when --skip-training is set (default: MODEL_SAVE_DIR).",
+    )
     args = parser.parse_args()
 
     mode = "EVALUATION ONLY (loading saved model)" if args.skip_training else "FULL PIPELINE (training + evaluation)"
@@ -50,7 +60,7 @@ def main():
 
     # Champion model — DistilBERT fine-tuning
     if args.skip_training:
-        model_distilbert, tokenizer = load_distilbert(MODEL_SAVE_DIR, DEVICE)
+        model_distilbert, tokenizer = load_distilbert(args.load_dir, DEVICE)
     else:
         df_bert_train, df_bert_val = train_test_split(
             df_train,
@@ -64,6 +74,7 @@ def main():
             df_bert_val["text"].tolist(),
             df_bert_val["sentiment"].tolist(),
             DEVICE,
+            save_dir=args.save_dir,
         )
     distilbert_preds = predict_distilbert(
         model_distilbert, tokenizer, df_test["text"].tolist(), DEVICE

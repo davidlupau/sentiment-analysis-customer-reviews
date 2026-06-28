@@ -160,6 +160,9 @@ def train_distilbert(
         logging_strategy="steps",
         logging_steps=50,
         disable_tqdm=True,
+        load_best_model_at_end=True,
+        metric_for_best_model="eval_loss",
+        greater_is_better=False,
     )
 
     trainer = Trainer(
@@ -234,8 +237,9 @@ def load_distilbert(
             Loaded model (in eval mode) and tokenizer.
     """
     print(f"Loading DistilBERT model from: {save_dir}")
-    tokenizer = DistilBertTokenizerFast.from_pretrained(save_dir)
-    model = DistilBertForSequenceClassification.from_pretrained(save_dir)
+    abs_save_dir = str(Path(save_dir).resolve())
+    tokenizer = DistilBertTokenizerFast.from_pretrained(abs_save_dir)
+    model = DistilBertForSequenceClassification.from_pretrained(abs_save_dir)
     model.to(device)
     model.eval()
     print(f"  Model is on device: {next(model.parameters()).device}\n")

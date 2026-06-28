@@ -6,7 +6,7 @@ from utils import detect_device, load_dataset, save_to_excel
 from data_exploration import clean_dataset, map_rating_to_sentiment, plot_class_imbalance
 from data_processing import split_dataset, balance_training_set
 from models import train_baseline, predict_baseline, train_distilbert, predict_distilbert, load_distilbert
-from evaluation import evaluate_model, plot_confusion_matrix
+from evaluation import evaluate_model, plot_confusion_matrix, evaluate_probe_set
 from constants import SAMPLES_PER_CLASS, RANDOM_STATE, MODEL_SAVE_DIR
 
 
@@ -87,6 +87,15 @@ def main():
     if metrics_distilbert:
         print(f"{'DistilBERT':<16}:  {metrics_distilbert['accuracy']:.4f}    {metrics_distilbert['macro_f1']:.4f}")
     print(sep)
+
+    # Probe set — qualitative evaluation
+    evaluate_probe_set(
+        vectorizer_baseline,
+        model_baseline,
+        model_distilbert,
+        tokenizer,
+        DEVICE,
+    )
 
 
 if __name__ == "__main__":

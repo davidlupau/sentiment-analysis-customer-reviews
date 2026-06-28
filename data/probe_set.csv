@@ -1,0 +1,21 @@
+id,text,true_label,phenomenon
+1,I thought I would be satisfied ordering a product from this brand,negative,negation
+2,Very happy with this t-shirt however the delivery was too slow,neutral,multipolar
+3,"You can't advertise a product as ""one size fits all"" when it is so small",negative,negation
+4,Probably the best trousers I have ever bought. Super comfortable and very light.,positive,control (positive)
+5,The product is clearly not the same as on the website. I thought it was yellow but it looks brown in real. Very disappointing.,negative,multipolar
+6,"I think it would be useful to specify that the product is sent from China so that we can expect delay in the delivery. Other than that, I am very pleased. It is really good quality with comfortable material.",neutral,multipolar
+7,I love the color on this dress. Very original.,positive,control (positive)
+8,Oh great! Another brand that claims to be environmental friendly but uses all kind of wonderful products toxic for the planet,negative,sarcasm
+9,I was so excited when I ordered this hat. What a disappointment when I found out it was way too big.,negative,negation
+10,"Oh great, another item that fell apart after one day. Truly exceptional quality.",negative,sarcasm
+11,What a wonderful black colour for these trousers and it’s evolving because after washing wash it once it became grey,negative,sarcasm
+12,"Nothing is positive with this shirt: quality is not good, material is not comfortable, color is not even nice",negative,negation
+13,Absolutely stunning craftsmanship. The zipper broke on day one and the seams unravelled by day three. Five stars for the creative interpretation of quality control.,negative,sarcasm
+14,"Wow, what incredible sizing. I ordered a medium and received what I can only describe as a small tent. Clearly labeled though, so at least they got that right.",negative,sarcasm
+15,"Just what I needed: a jacket that looks nothing like the photos, arrived three weeks late, and smells like it was stored in a basement. Truly a premium experience.",negative,sarcasm
+16,"The design is genuinely beautiful and I get compliments every time I wear it. That said, after two washes the colour has already started to fade, which at this price point is unacceptable.",neutral,multipolar
+17,Delivery was fast and the packaging was lovely. The shoes themselves are unfortunately too narrow for normal feet and I had to return them.,neutral,multipolar
+18,"I wouldn’t say this is a bad product, but I wouldn’t say it’s good either. It does the job without being anything special.",neutral,negation
+19,"Terrible product. Cheap plastic buttons, thin fabric, and it shrunk massively after the first wash. Complete waste of money.",negative,control (negative)
+20,"Exactly as described, arrived quickly, and the fit is perfect. I’ve already ordered two more in different colours.",positive,control (positive)

@@ -155,6 +155,7 @@ def train_distilbert(
         per_device_train_batch_size=BATCH_SIZE,
         per_device_eval_batch_size=BATCH_SIZE,
         eval_strategy="epoch",
+        save_strategy="epoch",
         seed=RANDOM_STATE,
         report_to="none",
         logging_strategy="steps",

@@ -158,15 +158,11 @@ def train_distilbert(
         per_device_train_batch_size=BATCH_SIZE,
         per_device_eval_batch_size=BATCH_SIZE,
         eval_strategy="epoch",
-        save_strategy="epoch",
         seed=RANDOM_STATE,
         report_to="none",
         logging_strategy="steps",
         logging_steps=50,
         disable_tqdm=True,
-        load_best_model_at_end=True,
-        metric_for_best_model="eval_loss",
-        greater_is_better=False,
     )
 
     trainer = Trainer(

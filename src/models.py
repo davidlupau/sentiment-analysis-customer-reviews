@@ -131,7 +131,10 @@ def train_distilbert(
 
     tokenizer = DistilBertTokenizerFast.from_pretrained(DISTILBERT_MODEL)
     model = DistilBertForSequenceClassification.from_pretrained(
-        DISTILBERT_MODEL, num_labels=3
+        DISTILBERT_MODEL,
+        num_labels=3,
+        ignore_mismatched_sizes=True,
+        torch_dtype=torch.float32,
     )
     model.to(device)
     print(f"  Model is on device: {next(model.parameters()).device}")

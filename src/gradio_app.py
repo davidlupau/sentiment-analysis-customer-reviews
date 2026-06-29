@@ -90,7 +90,7 @@ def build_interface(
                 "nothing more, nothing less."
             ],
         ],
-        allow_flagging="never",
+        flagging_mode="never",
     )
 
 

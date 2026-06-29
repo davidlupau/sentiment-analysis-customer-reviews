@@ -48,12 +48,15 @@ def detect_device() -> torch.device:
 # SECTION 2 — DATA LOADING
 # ─────────────────────────────────────────────────────────────────────────────
 
-def load_dataset(file_name):
-    """Load the dataset from the csv file
+def load_dataset(file_name: str) -> pd.DataFrame | None:
+    """Load an Amazon Fashion reviews CSV from the project data directory.
+
     Parameters:
-         file_name (string): name of the csv file in /data folder
+        file_name (str): Name of the CSV file inside the project's data/ folder.
+
     Returns:
-        dataframe containing the election results
+        pd.DataFrame | None: Loaded DataFrame, or None if the file is not found
+            or an error occurs.
     """
     print("\nLoading dataset...\n")
     try:
@@ -77,13 +80,19 @@ def load_dataset(file_name):
 # SECTION 3 — DATA SAVING
 # ─────────────────────────────────────────────────────────────────────────────
 
-def save_to_excel(data, file_name):
-    """Save analysis results to Excel file in analysis_output folder
+def save_to_excel(
+    data: pd.DataFrame | dict,
+    file_name: str,
+) -> str | None:
+    """Save a DataFrame or dict of DataFrames to an Excel file in analysis_output/.
+
     Parameters:
-        data: DataFrame or dict of DataFrames to save
-        file_name (str): name of the output Excel file
+        data (pd.DataFrame | dict): A single DataFrame written to one sheet,
+            or a dict mapping sheet names to DataFrames for a multi-sheet workbook.
+        file_name (str): Name of the output Excel file (e.g. 'results.xlsx').
+
     Returns:
-        str: path to saved file, None if failed
+        str | None: Absolute path to the saved file, or None if saving fails.
     """
     print(f"Saving analysis to {file_name}...\n")
     try:

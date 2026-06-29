@@ -62,3 +62,6 @@ distilbert_output/
 src/distilbert_output/
 *.safetensors
 *.pt
+
+# Gradio generated files
+.gradio/

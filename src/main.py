@@ -1,3 +1,8 @@
+"""
+main.py
+End-to-end sentiment analysis pipeline — training, evaluation, and probe set scoring.
+"""
+
 import argparse
 
 from sklearn.model_selection import train_test_split
@@ -42,7 +47,6 @@ def main():
 
     # Map ratings to sentiment labels
     df = map_rating_to_sentiment(df)
-    #save_to_excel(df, "sentiment_mapped.xlsx")
     plot_class_imbalance(df)
 
     # Split then balance training set

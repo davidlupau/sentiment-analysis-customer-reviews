@@ -58,13 +58,12 @@ Dataset: [Amazon Fashion 800k+ User Reviews](https://www.kaggle.com/datasets/faw
 
 ## Key findings
 
-- **DistilBERT wins on aggregate metrics.** Macro-F1 of **0.70** vs the baseline's **0.62** on the realistic test set.
-- **Macro-F1 was the right headline metric.** Overall accuracy would have hidden weak performance on the minority neutral class; macro-F1 weights all three classes equally.
-- **DistilBERT handles negation and mixed sentiment better**, as expected from a model that reads word order rather than counting words.
-- **DistilBERT fails completely on sarcasm** in the probe set (0 of 6), while the baseline catches most of them. The transformer trusts positive surface language ("absolutely stunning craftsmanship") that sarcastic reviews exploit.
-- **The baseline's sarcasm "success" is largely accidental** — sarcastic reviews often contain genuinely negative words ("broke", "fell apart") that a bag-of-words model picks up. It isn't understanding sarcasm; it's getting lucky on keywords.
-
-The headline-metric winner and the probe-set winner are not the same model — which is the most interesting result of the project.
+- **DistilBERT wins on aggregate metrics.** Macro-F1 of **0.69** vs the baseline's **0.62** on the realistic test set (accuracy 0.71 vs 0.65).
+- **Macro-F1 was the right headline metric.** Both models score worst on the minority neutral class (F1 ≈ 0.40 baseline, 0.47 DistilBERT); overall accuracy would have hidden this. Macro-F1 weights all three classes equally so the weak class can't be masked.
+- **The aggregate winner and the probe-set winner are different models.** On a hand-built 20-review probe set the *baseline* scores higher overall (14/20 vs 10/20), even though DistilBERT wins the large-scale metrics. This contrast is the most interesting result of the project.
+- **DistilBERT struggles badly with sarcasm** (1 of 6 on the probe set, vs 5 of 6 for the baseline). It tends to trust positive surface language ("absolutely stunning craftsmanship") that sarcastic reviews exploit.
+- **The baseline's sarcasm "success" is largely accidental** — sarcastic reviews often contain genuinely negative words ("broke", "fell apart") that a bag-of-words model picks up. It isn't understanding sarcasm; it's catching negative keywords.
+- **The probe set is a small qualitative diagnostic, not a benchmark.** With only 20 items, a one- or two-review swing flips a category, so the probe is used to surface *failure modes* rather than to rank the models precisely. The large test set remains the basis for the headline metrics.
 
 ---
 
@@ -76,13 +75,16 @@ sentiment-analysis-customer-reviews/
 │   ├── main.py            # Pipeline entry point (training, evaluation, app)
 │   ├── constants.py       # Configuration: model names, hyperparameters, label maps
 │   ├── utils.py           # Device detection and shared helpers
-│   ├── data_processing.py # Loading, cleaning, label mapping, balancing
+│   ├── data_cleaning.py   # Loading, cleaning, label mapping, imbalance plot
+│   ├── data_processing.py # Train/test split and class balancing
 │   ├── models.py          # TF-IDF baseline and DistilBERT training/prediction
 │   ├── evaluation.py      # Shared metrics and confusion matrices
-│   └── predict.py         # Shared prediction function used by the Gradio app
+│   ├── predict.py         # Shared prediction function used by the Gradio app
+│   └── gradio_app.py      # Gradio interface for end users
 ├── notebook/              # Self-contained annotated walkthrough of the full pipeline
 ├── data/                  # Dataset goes here (full CSV is gitignored)
-├── analysis_output/       # Generated plots, confusion matrices, probe-set others
+├── analysis_output/       # Generated plots, confusion matrices, probe-set results
+├── make_sample.py         # Helper to create a small data sample
 ├── requirements.txt
 └── README.md
 ```

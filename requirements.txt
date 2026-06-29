@@ -1,1 +1,15 @@
+# Deep learning
+torch>=2.0.0
 transformers==5.3.0
+
+# ML baseline
+scikit-learn>=1.7.2
+
+# Data & visualisation
+pandas>=2.3.3
+matplotlib>=3.10.6
+seaborn>=0.13.2
+openpyxl>=3.1.5
+
+# Gradio UI (flagging_mode API requires >=4.0)
+gradio>=4.0.0

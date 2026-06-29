@@ -8,7 +8,7 @@ import argparse
 from sklearn.model_selection import train_test_split
 
 from utils import detect_device, load_dataset, save_to_excel
-from data_exploration import clean_dataset, map_rating_to_sentiment, plot_class_imbalance
+from data_cleaning import clean_dataset, map_rating_to_sentiment, plot_class_imbalance
 from data_processing import split_dataset, balance_training_set
 from models import train_baseline, predict_baseline, train_distilbert, predict_distilbert, load_distilbert
 from evaluation import evaluate_model, plot_confusion_matrix, evaluate_probe_set
